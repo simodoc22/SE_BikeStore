@@ -19,13 +19,33 @@ class Controller:
         self._view.dp2.last_date = datetime.date(last.year, last.month, last.day)
         self._view.dp2.current_date = datetime.date(last.year, last.month, last.day)
 
+    def setcategory(self):
+        lista = self._model.get_category()
+        for i in lista:
+            self._view.dd_category.options.append(ft.dropdown.Option(i.name))
+        self._view.update()
+
     def handle_crea_grafo(self, e):
         """ Handler per gestire creazione del grafo """
-        # TODO
+        categoria = self._view.dd_category.value
+        data_inizio = self._view.dp1.value
+        data_fine = self._view.dp2.value
+        self._model.crea_grafo(categoria,data_inizio,data_fine)
+        self._view.txt_risultato.controls.append(ft.Text(f"Grafo correttamente creato"))
+        self._view.txt_risultato.controls.append(ft.Text(f"numero nodi: {self._model.G.number_of_nodes()}"))
+        self._view.txt_risultato.controls.append(ft.Text(f"numero archi: {self._model.G.number_of_edges()}"))
+        self._view.update()
 
     def handle_best_prodotti(self, e):
         """ Handler per gestire la ricerca dei prodotti migliori """
-        # TODO
+        lista_prodotti = self._model.ricerca_prodotti()
+        self._view.txt_risultato.controls.append(ft.Text(f"best_prodotti:"))
+        for i in range(5):
+            nodo = lista_prodotti[i][0]
+            somma = lista_prodotti[i][1]
+            self._view.txt_risultato.controls.append(ft.Text(f"{nodo} : {somma}"))
+        self._view.update()
+
 
     def handle_cerca_cammino(self, e):
         """ Handler per gestire il problema ricorsivo di ricerca del cammino """
